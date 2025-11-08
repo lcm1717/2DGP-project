@@ -4,17 +4,42 @@ current_stage =1
 
 open_canvas()
 background= load_image('map1.png')
+character = load_image('Idle.png')
 
-running = True
-while running:
+def handle_events():
+    global running,dir
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             running = False
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            running = False
+        elif event.type == SDL_KEYDOWN:
+            if event.key == SDLK_RIGHT:
+                dir +=1
+            elif event.key == SDLK_LEFT:
+                dir -=1
+            elif event.key == SDLK_ESCAPE:
+                running = False
+        elif event.type == SDL_KEYUP:
+            if event.key == SDLK_RIGHT:
+                dir -=1
+            elif event.key == SDLK_LEFT:
+                dir +=1
 
+running = True
+x= 800//2
+frame = 0
+dir = 0
+while running:
     clear_canvas()
-    background.draw(400,300)
+    background.draw(400,300,800,600)
+    character.clip_draw(frame*70,0,100,100,50,90)
     update_canvas()
+    handle_events()
+    frame =(frame+1)%5
+    x += dir *5
+    delay(0.1)
+
+
+
+close_canvas()
 
