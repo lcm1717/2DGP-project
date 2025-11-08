@@ -14,4 +14,7 @@ while running:
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
 
+    clear_canvas()
+    background.draw(400,300)
+    update_canvas()
 
