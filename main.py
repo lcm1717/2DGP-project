@@ -36,15 +36,15 @@ while running:
 
     if dir>0:
         run_character.clip_draw(frame*70,0,100,100,x,90)
-
-    character.clip_draw(frame*70,0,100,100,x,90)
+    elif dir<0:
+        run_character.clip_composite_draw(frame*70,0,100,100,0,'h',x,90,100,100)
+    else:
+        character.clip_draw(frame*70,0,100,100,x,90)
     update_canvas()
     handle_events()
     frame =(frame+1)%5
     x += dir *5
     delay(0.1)
-
-
 
 close_canvas()
 
