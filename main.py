@@ -5,9 +5,10 @@ current_stage =1
 open_canvas()
 background= load_image('map1.png')
 character = load_image('Idle.png')
+run_character = load_image('Run.png')
 
 def handle_events():
-    global running,dir
+    global running, dir
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -32,7 +33,11 @@ dir = 0
 while running:
     clear_canvas()
     background.draw(400,300,800,600)
-    character.clip_draw(frame*70,0,100,100,50,90)
+
+    if dir>0:
+        run_character.clip_draw(frame*70,0,100,100,x,90)
+
+    character.clip_draw(frame*70,0,100,100,x,90)
     update_canvas()
     handle_events()
     frame =(frame+1)%5
