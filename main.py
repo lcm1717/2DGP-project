@@ -61,14 +61,14 @@ while running:
         monster.draw()
 
     if dir>0:
-        run_character.clip_draw(frame*10,0,100,100,x,90)
+        run_character.clip_draw(frame*130,0,130,80,x,90)
         frame =(frame+1) % 8
     elif dir<0:
-        run_character.clip_composite_draw(frame*10,0,100,100,0,'h',x,90,100,100)
+        run_character.clip_composite_draw(frame*130,0,130,100,0,'h',x,90,100,100)
         frame = (frame + 1) % 8
     else:
-        character.clip_draw(frame*10,0,70,100,x,90)
-        frame = (frame + 1) % 5
+        character.clip_draw(frame*20,0,70,100,x,90)
+        frame = (frame + 1) % 3
 
     update_canvas()
     delay(0.07)
