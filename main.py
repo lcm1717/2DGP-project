@@ -30,18 +30,18 @@ def handle_events():
 
 class monster:
     def __init__(self):
-        self.x, self.y = random.randint(100,700), 90
+        self.x, self.y = random.randint(100,700), 50
         self.frame = random.randint(0,9)
         self.image = load_image('monster1.png')
 
     def update(self):
         self.frame = (self.frame + 1) % 10
-        self.x += 5
+
 
     def draw(self):
-        self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
+        self.image.clip_draw(self.frame * 50, 0, 50, 60, self.x, self.y)
 
-monsters = [Monster() for i in range(5)]
+monsters = [monster() for i in range(5)]
 
 running = True
 x= 800//2
