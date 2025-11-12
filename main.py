@@ -19,7 +19,7 @@ def handle_events():
                 dir +=1
             elif event.key == SDLK_LEFT:
                 dir -=1
-            elif event.ey == SDLK_UP:
+            elif event.key == SDLK_UP:
                 dir_y +=1
             elif event.key == SDLK_DOWN:
                 dir_y -=1
@@ -55,11 +55,15 @@ running = True
 x= 800//2
 frame = 0
 dir = 0
+y=90
+dir_y=0
 
 while running:
     handle_events()
     x += dir * 5
+    y += dir_y *5
     x = max(0, min(x, 800))
+    y = max(0, min(y, 600))
 
     for monster in monsters:
         monster.update()
@@ -69,17 +73,17 @@ while running:
         monster.draw()
 
     if dir>0:
-        run_character.clip_draw(frame*130,0,130,80,x,90)
+        run_character.clip_draw(frame*130,0,130,80,x,y)
         frame =(frame+1) % 8
     elif dir<0:
-        run_character.clip_composite_draw(frame*130,0,130,100,0,'h',x,90,100,100)
+        run_character.clip_composite_draw(frame*130,0,130,100,0,'h',x,y,100,100)
         frame = (frame + 1) % 8
     else:
-        character.clip_draw(frame*100,0,100,100,x,90)
+        character.clip_draw(frame*130,0,130,100,x,y)
         frame = (frame + 1) % 2
 
     update_canvas()
-    delay(0.1)
+    delay(0.05)
 
 close_canvas()
 
