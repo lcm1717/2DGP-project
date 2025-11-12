@@ -9,7 +9,7 @@ character = load_image('Idle.png')
 run_character = load_image('Run.png')
 
 def handle_events():
-    global running, dir
+    global running, dir,dir_y
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -19,6 +19,10 @@ def handle_events():
                 dir +=1
             elif event.key == SDLK_LEFT:
                 dir -=1
+            elif event.ey == SDLK_UP:
+                dir_y +=1
+            elif event.key == SDLK_DOWN:
+                dir_y -=1
             elif event.key == SDLK_ESCAPE:
                 running = False
         elif event.type == SDL_KEYUP:
@@ -26,22 +30,26 @@ def handle_events():
                 dir -=1
             elif event.key == SDLK_LEFT:
                 dir +=1
+            elif event.key == SDLK_UP:
+                dir_y -=1
+            elif event.key == SDLK_DOWN:
+                dir_y +=1
 
 
 class monster:
     def __init__(self):
-        self.x, self.y = random.randint(100,700), 50
-        self.frame = random.randint(0,9)
+        self.x, self.y = random.randint(0,800),random.randint(0,600)
+        self.frame = random.randint(0,4)
         self.image = load_image('monster1.png')
 
     def update(self):
-        self.frame = (self.frame + 1) % 10
+        self.frame = (self.frame + 1) % 5
 
 
     def draw(self):
-        self.image.clip_draw(self.frame * 50, 0, 50, 60, self.x, self.y)
+        self.image.clip_draw(self.frame * 45, 0, 45, 60, self.x, self.y,80,80)
 
-monsters = [monster() for i in range(5)]
+monsters = [monster() for i in range(4)]
 
 running = True
 x= 800//2
@@ -67,11 +75,11 @@ while running:
         run_character.clip_composite_draw(frame*130,0,130,100,0,'h',x,90,100,100)
         frame = (frame + 1) % 8
     else:
-        character.clip_draw(frame*20,0,70,100,x,90)
-        frame = (frame + 1) % 3
+        character.clip_draw(frame*100,0,100,100,x,90)
+        frame = (frame + 1) % 2
 
     update_canvas()
-    delay(0.07)
+    delay(0.1)
 
 close_canvas()
 
