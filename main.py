@@ -7,6 +7,8 @@ open_canvas()
 background= load_image('map1.png')
 character = load_image('Idle.png')
 run_character = load_image('Run.png')
+attack_character = load_image('Attack_1.png')
+
 
 def handle_events():
     global running, dir,dir_y
@@ -47,7 +49,7 @@ class monster:
 
 
     def draw(self):
-        self.image.clip_draw(self.frame * 45, 0, 45, 60, self.x, self.y,80,80)
+        self.image.clip_draw(self.frame * 45, 0, 45, 60, self.x, self.y,60,60)
 
 monsters = [monster() for i in range(4)]
 
@@ -83,7 +85,7 @@ while running:
         frame = (frame + 1) % 2
 
     update_canvas()
-    delay(0.05)
+    delay(0.1)
 
 close_canvas()
 
