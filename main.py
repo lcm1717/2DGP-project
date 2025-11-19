@@ -130,10 +130,10 @@ while running:
 
     for key in keys:
         key_bb = key.get_bb()
-        if game_world.collide(boy_bb,key_bb):
-            keys_to_remove.append(key)
+        if key.collided == False and game_world.collide(boy_bb,key_bb):
+            key.collided=True
             key.collision_time=get_time()
-        if get_time()-key.collision_time>=1.5:
+        if key.collided and get_time()-key.collision_time>=1.5:
             keys_to_remove.append(key)
 
     if attack_state:
