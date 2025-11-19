@@ -9,6 +9,9 @@ character = load_image('Idle.png')
 run_character = load_image('Run.png')
 attack_character = load_image('Attack_1.png')
 
+attack_state=False
+attack_frame=0
+face_dir=1
 
 def handle_events():
     global running, dir,dir_y
