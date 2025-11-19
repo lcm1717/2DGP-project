@@ -11,6 +11,7 @@ class GameWorld:
         if bottom_a > top_b: return False
 
         return True
+game_world = GameWorld()
 current_stage =1
 
 open_canvas()
@@ -22,6 +23,7 @@ attack_character = load_image('Attack_1.png')
 attack_state=False
 attack_frame=0
 face_dir=1
+collision=15
 
 
 def handle_events():
