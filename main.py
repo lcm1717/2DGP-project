@@ -106,6 +106,22 @@ while running:
         monster.update()
     boy_bb=get_boy_bb(x,y)
     monsters_to_remove=[]
+
+    if attack_state:
+        for monster in monsters:
+            monster_bb = monster.get_bb()
+            if game_world.collide(boy_bb,monster_bb):
+                monster.collision_frame+=1
+
+                if monster.collision_frame >= collision:
+                    monsters_to_remove.append(monster)
+
+            else:
+                monster.collision_frame=0
+    else:
+        for monster in monsters:
+            monster.collision_frame=0
+    monsters= [m for m in monsters if m not in monsters_to_remove]
     clear_canvas()
     background.draw(400,300,800,600)
     for monster in monsters:
