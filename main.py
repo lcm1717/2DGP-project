@@ -82,6 +82,9 @@ while running:
     background.draw(400,300,800,600)
     for monster in monsters:
         monster.draw()
+    if attack_state:
+        if face_dir ==1:
+            attack_character.clip_draw(attack_frame*130,0,130,100,x,y)
 
     if dir>0:
         run_character.clip_draw(frame*130,0,130,80,x,y)
