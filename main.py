@@ -20,6 +20,7 @@ run_character = load_image('Run.png')
 attack_character = load_image('Attack_1.png')
 key_image=load_image('key.png')
 attack2_character= load_image('Attack_2.png')
+background2= load_image('map2.png')
 
 attack_state=False
 attack_frame=0
@@ -163,6 +164,9 @@ while running:
             monster.collision_frame=0
     monsters= [m for m in monsters if m not in monsters_to_remove]
     keys= [k for k in keys if k not in keys_to_remove]
+    if not monsters and not keys and current_stage==1:
+        current_stage+=1
+        background= background2
     clear_canvas()
     background.draw(400,300,800,600)
 
