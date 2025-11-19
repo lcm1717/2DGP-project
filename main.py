@@ -9,7 +9,6 @@ class GameWorld:
         if right_a < left_b: return False
         if top_a < bottom_b: return False
         if bottom_a > top_b: return False
-
         return True
 game_world = GameWorld()
 current_stage =1
@@ -79,7 +78,7 @@ class monster:
         self.frame = (self.frame + 1) % 5
 
     def get_bb(self):
-        return self.x-self,width/2,self.y-self.height/2,self.x+self.height/2
+        return self.x-self.width/2,self.y-self.height/2,self.x+self.height/2
 
     def draw(self):
         self.image.clip_draw(self.frame*45,0,45,60,self.x,self.y,self.width,self.height)
@@ -105,6 +104,8 @@ while running:
 
     for monster in monsters:
         monster.update()
+    boy_bb=get_boy_bb(x,y)
+    monsters_to_remove=[]
     clear_canvas()
     background.draw(400,300,800,600)
     for monster in monsters:
