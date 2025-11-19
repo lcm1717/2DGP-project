@@ -70,6 +70,7 @@ dir_y=0
 
 while running:
     handle_events()
+    if not attack_state:
     x += dir * 5
     y += dir_y *5
     x = max(0, min(x, 800))
