@@ -19,9 +19,12 @@ character = load_image('Idle.png')
 run_character = load_image('Run.png')
 attack_character = load_image('Attack_1.png')
 key_image=load_image('key.png')
+attack2_character= load_image('Attack_2.png')
 
 attack_state=False
 attack_frame=0
+key_attack_state=False
+key_attack_frame=0
 face_dir=1
 collision=20
 
@@ -50,7 +53,8 @@ def handle_events():
                 running = False
             elif event.key == SDLK_a:
                 attack_state = True
-
+            elif event.key == SDLK_s:
+                key_attack_state = True
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
                 dir -=1
@@ -64,6 +68,10 @@ def handle_events():
                 attack_state = False
                 global attack_frame
                 attack_frame = 0
+            elif event.key == SDLK_s:
+                key_attack_state = False
+                global key_attack_frame
+                key_attack_frame = 0
 
 
 class Key:
@@ -181,6 +189,13 @@ while running:
             else:
                 character.clip_composite_draw(frame*130,0,130,100,0,'h',x,y,100,100)
             frame = (frame + 1) % 2
+
+    if key_attack_state:
+        if face_dir ==1:
+            attack2_character.clip_draw(key_attack_frame*130,0,130,100,x,y)
+        else:
+            attack2_character.clip_composite_draw(key_attack_frame*130,0,130,100,0,'h',x,y,100,100)
+        key_attack_frame= (key_attack_frame + 1) % 8
 
     update_canvas()
     delay(0.05)
