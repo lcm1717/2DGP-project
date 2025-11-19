@@ -119,6 +119,11 @@ while running:
     monsters_to_remove=[]
     keys_to_remove=[]
 
+    for key in keys:
+        key_bb = key.get_bb()
+        if game_world.collide(boy_bb,key_bb):
+            keys_to_remove.append(key)
+
     if attack_state:
         for monster in monsters:
             monster_bb = monster.get_bb()
@@ -134,15 +139,17 @@ while running:
         for monster in monsters:
             monster.collision_frame=0
     monsters= [m for m in monsters if m not in monsters_to_remove]
-
+    keys= [k for k in keys if k not in keys_to_remove]
     clear_canvas()
     background.draw(400,300,800,600)
-    for key in keys:
-        key.draw()
+
 
     draw_rectangle(*boy_bb)
     for monster in monsters:
         monster.draw()
+    for key in keys:
+        key.draw()
+
     if attack_state:
         if face_dir ==1:
             attack_character.clip_draw(attack_frame*130,0,130,100,x,y)
