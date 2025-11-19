@@ -64,15 +64,24 @@ def handle_events():
                 attack_state = False
                 global attack_frame
                 attack_frame = 0
+
+
 class Key:
     def __init__(self):
         self.x,self.y= random.randint(100,750),random.randint(100,550)
         self.image= load_image('key.png')
+        self.bb_width=30
+        self.bb_height=30
+        self.collided=False
+        self.collision_time=0
     def draw(self):
         key_image.draw(self.x,self.y,50,50)
         draw_rectangle(*self.get_bb())
     def get_bb(self):
         return self.x-self.bb_width/2,self.y-self.bb_height/2,self.x+self.bb_width/2,self.y+self.bb_height/2
+
+
+
 class monster:
     def __init__(self):
         self.x, self.y = random.randint(0,700),random.randint(0,500)
@@ -122,6 +131,9 @@ while running:
     for key in keys:
         key_bb = key.get_bb()
         if game_world.collide(boy_bb,key_bb):
+            keys_to_remove.append(key)
+            key.collision_time=get_time()
+        if get_time()-key.collision_time>=1.5:
             keys_to_remove.append(key)
 
     if attack_state:
