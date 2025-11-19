@@ -25,6 +25,9 @@ attack_frame=0
 face_dir=1
 collision=15
 
+def get_boy_bb(cx,cy):
+    return cx - 50, cy - 50, cx + 50, cy + 50
+
 
 def handle_events():
     global running, dir,dir_y,face_dir,attack_state
@@ -68,13 +71,20 @@ class monster:
         self.x, self.y = random.randint(0,800),random.randint(0,600)
         self.frame = random.randint(0,4)
         self.image = load_image('monster1.png')
+        self.collision_frame=0
+        self.width =60
+        self.height =60
 
     def update(self):
         self.frame = (self.frame + 1) % 5
 
+    def get_bb(self):
+        return self.x-self,width/2,self.y-self.height/2,self.x+self.height/2
 
     def draw(self):
-        self.image.clip_draw(self.frame * 45, 0, 45, 60, self.x, self.y,60,60)
+        self.image.clip_draw(self.frame*45,0,45,60,self.x,self.y,self.width,self.height)
+        draw_rectangle(*self.get_bb())
+
 
 monsters = [monster() for i in range(4)]
 
