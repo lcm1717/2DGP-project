@@ -18,6 +18,7 @@ background= load_image('map1.png')
 character = load_image('Idle.png')
 run_character = load_image('Run.png')
 attack_character = load_image('Attack_1.png')
+key_image=load_image('key.png')
 
 attack_state=False
 attack_frame=0
@@ -63,6 +64,9 @@ def handle_events():
                 attack_state = False
                 global attack_frame
                 attack_frame = 0
+class Key:
+    def __init__(self):
+        self.x,self.y= random.randint(100,750),random.randint(100,550)
 
 
 class monster:
@@ -80,7 +84,7 @@ class monster:
         self.frame = (self.frame + 1) % 5
 
     def get_bb(self):
-        return self.x-self.bb_width/2,self.y-self.bb_height/2,self.x+self.bb_height/2,self.y+self.bb_height/2
+        return self.x-self.bb_width/2,self.y-self.bb_height/2,self.x+self.bb_width/2,self.y+self.bb_height/2
 
     def draw(self):
         self.image.clip_draw(self.frame*45,0,45,60,self.x,self.y,self.width,self.height)
@@ -88,6 +92,7 @@ class monster:
 
 
 monsters = [monster() for i in range(4)]
+keys=[Key() for i in range(2)]
 
 running = True
 x= 800//2
@@ -127,6 +132,8 @@ while running:
 
     clear_canvas()
     background.draw(400,300,800,600)
+    for key in keys:
+        key.draw()
 
     draw_rectangle(*boy_bb)
     for monster in monsters:
