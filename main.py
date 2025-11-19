@@ -78,7 +78,7 @@ class monster:
         self.frame = (self.frame + 1) % 5
 
     def get_bb(self):
-        return self.x-self.width/2,self.y-self.height/2,self.x+self.height/2
+        return self.x-self.width/2,self.y-self.height/2,self.x+self.height/2,self.y+self.height/2
 
     def draw(self):
         self.image.clip_draw(self.frame*45,0,45,60,self.x,self.y,self.width,self.height)
@@ -122,8 +122,11 @@ while running:
         for monster in monsters:
             monster.collision_frame=0
     monsters= [m for m in monsters if m not in monsters_to_remove]
+
     clear_canvas()
     background.draw(400,300,800,600)
+
+    draw_rectangle(*boy_bb)
     for monster in monsters:
         monster.draw()
     if attack_state:
