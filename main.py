@@ -1,6 +1,16 @@
 from pico2d import*
 import random
+class GameWorld:
+    def collide(self,a_bb,b_bb):
+        left_a, bottom_a, right_a, top_a = a_bb
+        left_b, bottom_b, right_b, top_b = b_bb
 
+        if left_a > right_b: return False
+        if right_a < left_b: return False
+        if top_a < bottom_b: return False
+        if bottom_a > top_b: return False
+
+        return True
 current_stage =1
 
 open_canvas()
@@ -12,6 +22,7 @@ attack_character = load_image('Attack_1.png')
 attack_state=False
 attack_frame=0
 face_dir=1
+
 
 def handle_events():
     global running, dir,dir_y,face_dir,attack_state
