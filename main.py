@@ -30,6 +30,11 @@ def handle_events():
                 dir_y -=1
             elif event.key == SDLK_ESCAPE:
                 running = False
+            elif event.key == SDLK_a:
+                if not attack_state:
+                    attack_state = True
+                    global attack_frame
+                    attack_frame = 0
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
                 dir -=1
