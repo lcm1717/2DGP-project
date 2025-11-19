@@ -14,7 +14,7 @@ attack_frame=0
 face_dir=1
 
 def handle_events():
-    global running, dir,dir_y
+    global running, dir,dir_y,face_dir,attack_state
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -22,8 +22,10 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_RIGHT:
                 dir +=1
+                face_dir=1
             elif event.key == SDLK_LEFT:
                 dir -=1
+                face_dir=-1
             elif event.key == SDLK_UP:
                 dir_y +=1
             elif event.key == SDLK_DOWN:
@@ -31,7 +33,7 @@ def handle_events():
             elif event.key == SDLK_ESCAPE:
                 running = False
             elif event.key == SDLK_a:
-                    attack_state = True
+                attack_state = True
 
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
@@ -73,10 +75,10 @@ dir_y=0
 while running:
     handle_events()
     if not attack_state:
-    x += dir * 5
-    y += dir_y *5
-    x = max(0, min(x, 800))
-    y = max(0, min(y, 600))
+        x += dir * 5
+        y += dir_y *5
+        x = max(0, min(x, 800))
+        y = max(0, min(y, 600))
 
     for monster in monsters:
         monster.update()
@@ -91,21 +93,21 @@ while running:
             attack_character.clip_composite_draw(attack_frame*130,0,130,100,0,'h',x,y,100,100)
         attack_frame= (attack_frame + 1) % 6
     else:
-    if dir>0:
-        run_character.clip_draw(frame*130,0,130,80,x,y)
-        frame =(frame+1) % 8
-    elif dir<0:
-        run_character.clip_composite_draw(frame*130,0,130,100,0,'h',x,y,100,100)
-        frame = (frame + 1) % 8
-    else:
-        if face_dir==1:
-            attack_character.clip_draw(frame*130,0,130,100,x,y)
+        if dir>0:
+            run_character.clip_draw(frame*130,0,130,80,x,y)
+            frame =(frame+1) % 8
+        elif dir<0:
+            run_character.clip_composite_draw(frame*130,0,130,100,0,'h',x,y,100,100)
+            frame = (frame + 1) % 8
         else:
-            attack_character.clip_composite_draw(frame*130,0,130,100,0,'h',x,y,100,100)
-        frame = (frame + 1) % 2
+            if face_dir==1:
+                character.clip_draw(frame*130,0,130,100,x,y)
+            else:
+                character.clip_composite_draw(frame*130,0,130,100,0,'h',x,y,100,100)
+            frame = (frame + 1) % 2
 
     update_canvas()
-    delay(0.1)
+    delay(0.08)
 
 close_canvas()
 
