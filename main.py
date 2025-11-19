@@ -67,8 +67,12 @@ def handle_events():
 class Key:
     def __init__(self):
         self.x,self.y= random.randint(100,750),random.randint(100,550)
-
-
+        self.image= load_image('key.png')
+    def draw(self):
+        key_image.draw(self.x,self.y,50,50)
+        draw_rectangle(*self.get_bb())
+    def get_bb(self):
+        return self.x-self.bb_width/2,self.y-self.bb_height/2,self.x+self.bb_width/2,self.y+self.bb_height/2
 class monster:
     def __init__(self):
         self.x, self.y = random.randint(0,700),random.randint(0,500)
@@ -113,6 +117,7 @@ while running:
         monster.update()
     boy_bb=get_boy_bb(x,y)
     monsters_to_remove=[]
+    keys_to_remove=[]
 
     if attack_state:
         for monster in monsters:
