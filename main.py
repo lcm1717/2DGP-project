@@ -22,10 +22,10 @@ attack_character = load_image('Attack_1.png')
 attack_state=False
 attack_frame=0
 face_dir=1
-collision=15
+collision=20
 
 def get_boy_bb(cx,cy):
-    return cx - 50, cy - 50, cx + 50, cy + 50
+    return cx - 30, cy - 40, cx + 30, cy + 40
 
 
 def handle_events():
@@ -67,18 +67,20 @@ def handle_events():
 
 class monster:
     def __init__(self):
-        self.x, self.y = random.randint(0,800),random.randint(0,600)
+        self.x, self.y = random.randint(0,700),random.randint(0,500)
         self.frame = random.randint(0,4)
         self.image = load_image('monster1.png')
         self.collision_frame=0
         self.width =60
         self.height =60
+        self.bb_width=20
+        self.bb_height=20
 
     def update(self):
         self.frame = (self.frame + 1) % 5
 
     def get_bb(self):
-        return self.x-self.width/2,self.y-self.height/2,self.x+self.height/2,self.y+self.height/2
+        return self.x-self.bb_width/2,self.y-self.bb_height/2,self.x+self.bb_height/2,self.y+self.bb_height/2
 
     def draw(self):
         self.image.clip_draw(self.frame*45,0,45,60,self.x,self.y,self.width,self.height)
@@ -150,7 +152,7 @@ while running:
             frame = (frame + 1) % 2
 
     update_canvas()
-    delay(0.08)
+    delay(0.05)
 
 close_canvas()
 
