@@ -31,10 +31,8 @@ def handle_events():
             elif event.key == SDLK_ESCAPE:
                 running = False
             elif event.key == SDLK_a:
-                if not attack_state:
                     attack_state = True
-                    global attack_frame
-                    attack_frame = 0
+
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
                 dir -=1
@@ -44,6 +42,10 @@ def handle_events():
                 dir_y -=1
             elif event.key == SDLK_DOWN:
                 dir_y +=1
+            elif event.key == SDLK_a:
+                attack_state = False
+                global attack_frame
+                attack_frame = 0
 
 
 class monster:
@@ -85,7 +87,10 @@ while running:
     if attack_state:
         if face_dir ==1:
             attack_character.clip_draw(attack_frame*130,0,130,100,x,y)
-
+        else:
+            attack_character.clip_composite_draw(attack_frame*130,0,130,100,0,'h',x,y,100,100)
+        attack_frame= (attack_frame + 1) % 6
+    else:
     if dir>0:
         run_character.clip_draw(frame*130,0,130,80,x,y)
         frame =(frame+1) % 8
@@ -93,7 +98,10 @@ while running:
         run_character.clip_composite_draw(frame*130,0,130,100,0,'h',x,y,100,100)
         frame = (frame + 1) % 8
     else:
-        character.clip_draw(frame*130,0,130,100,x,y)
+        if face_dir==1:
+            attack_character.clip_draw(frame*130,0,130,100,x,y)
+        else:
+            attack_character.clip_composite_draw(frame*130,0,130,100,0,'h',x,y,100,100)
         frame = (frame + 1) % 2
 
     update_canvas()
