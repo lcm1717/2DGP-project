@@ -89,6 +89,7 @@ class Key:
     def draw(self):
         key_image.draw(self.x,self.y,50,50)
         draw_rectangle(*self.get_bb())
+
     def get_bb(self):
         return self.x-self.bb_width/2,self.y-self.bb_height/2,self.x+self.bb_width/2,self.y+self.bb_height/2
 
@@ -169,9 +170,10 @@ while running:
         background= background2
     clear_canvas()
     background.draw(400,300,800,600)
-
-
     draw_rectangle(*boy_bb)
+
+
+
     for monster in monsters:
         monster.draw()
     for key in keys:
