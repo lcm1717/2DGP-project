@@ -143,7 +143,7 @@ while running:
 
     for key in keys:
         key_bb = key.get_bb()
-        if key.collided == False and game_world.collide(boy_bb,key_bb):
+        if key_attack_state and key.collided == False and game_world.collide(boy_bb,key_bb):
             key.collided=True
             key.collision_time=get_time()
         if key.collided and get_time()-key.collision_time>=1.5:
