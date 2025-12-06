@@ -183,6 +183,8 @@ while running:
                         m.kill_start_time = current_time
                     if current_time-m.kill_start_time >=MONSTER_KILL_TIME:
                         monsters_to_remove.append(m)
+                else:
+                    m.kill_start_time = None
 
                     if m.collision_frame >= collision:
                         monsters_to_remove.append(m)
