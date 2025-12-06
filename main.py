@@ -127,8 +127,7 @@ class monster2:
         self.height = 60
         self.bb_width = 20
         self.bb_height = 20
-        self.hit_count = 0
-        self.hit_threshold =
+        self.collision_start_time = None
     def update(self):
         self.frame = (self.frame + 1) % 4
 
@@ -187,16 +186,23 @@ while running:
             for m in monsters:
                 m.collision_frame=0
     elif current_stage == 2:
-        for m in monsters:
+        if attack_state
+            for m in monsters:
+                if game_world.collide(boy_bb,m.get_bb()):
+                    m.hit_count+=1
+                    if m.collision_frame >= collision:
+                        monsters_to_remove.append(m)
+                else:
+                    m.collision_frame=0
+        else:
+            for m in monsters:
+                m.collision_frame=0
+        global player_hp
+        for m in monster:
             if game_world.collide(boy_bb,m.get_bb()):
-                m.hit_count+=1
-                if m.hit_count>=m.hit_threshold:
-                    player_hp -=1
-                    m.hit_count=0
-                    if player_hp<=0:
-                        running = False
-            else:
-                pass
+                current_time = get_time()
+                if m.collision_start_time is None:
+                    m.collision_start_time = current_time
         if attack_state:
             for m in monsters:
                 monster_bb = m.get_bb()
