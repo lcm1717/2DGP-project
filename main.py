@@ -193,6 +193,8 @@ while running:
                 if m.hit_count>=m.hit_threshold:
                     player_hp -=1
                     m.hit_count=0
+                    if player_hp<=0:
+                        running = False
     monsters= [m for m in monsters if m not in monsters_to_remove]
     keys= [k for k in keys if k not in keys_to_remove]
     if not monsters and not keys and current_stage==1:
