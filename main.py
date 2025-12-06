@@ -203,6 +203,9 @@ while running:
                 current_time = get_time()
                 if m.collision_start_time is None:
                     m.collision_start_time = current_time
+                elif current_time-m.collision_start_time>=5.0:
+                    player_hp -=1
+                    m.collision_start_time = None
         if attack_state:
             for m in monsters:
                 monster_bb = m.get_bb()
