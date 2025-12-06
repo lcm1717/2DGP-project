@@ -188,16 +188,13 @@ while running:
         else:
             for m in monsters:
                 m.kill_start_time = None
+    if current_stage ==2:
+        global player_hp
+        for m in monsters:
+            if game_world.collide(boy_bb,m.get_bb()):
+                if m.collision_start_time is None:
+                    m.collision_start_time = current_time
 
-                    if m.collision_frame >= collision:
-                        monsters_to_remove.append(m)
-
-                else:
-                    m.collision_frame=0
-        else:
-            for m in monsters:
-                m.collision_frame=0
-    elif current_stage == 2:
         if attack_state:
             for m in monsters:
                 monster_bb = m.get_bb()
