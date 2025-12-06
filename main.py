@@ -195,6 +195,8 @@ while running:
                     m.hit_count=0
                     if player_hp<=0:
                         running = False
+            else:
+                pass
     monsters= [m for m in monsters if m not in monsters_to_remove]
     keys= [k for k in keys if k not in keys_to_remove]
     if not monsters and not keys and current_stage==1:
