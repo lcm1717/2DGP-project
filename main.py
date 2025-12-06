@@ -126,6 +126,8 @@ class monster2:
         self.height = 60
         self.bb_width = 20
         self.bb_height = 20
+        self.hit_count = 0
+        self.hit_threshold = 6
     def update(self):
         self.frame = (self.frame + 1) % 4
 
