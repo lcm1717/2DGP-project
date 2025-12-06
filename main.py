@@ -147,6 +147,8 @@ class monster2:
 monsters = [monster() for i in range(5)]
 keys=[Key() for i in range(2)]
 
+
+
 running = True
 x= 800//2
 frame = 0
@@ -209,14 +211,22 @@ while running:
     monsters= [m for m in monsters if m not in monsters_to_remove]
     keys= [k for k in keys if k not in keys_to_remove]
 
-    if not monsters and not keys and current_stage==1:
-        current_stage+=1
-        background= background2
-        monsters = [monster2() for i in range (5)]
-        keys = [Key() for i in range(1)]
+    if not monsters and not keys:
+        if current_stage==1:
+            current_stage+=1
+            background= background2
+            monsters = [monster2() for i in range (5)]
+            keys = [Key() for i in range(1)]
+        elif current_stage==2:
+            current_stage+=1
+            background= background3
+            monsters =[]
+            keys =[]
+
+
+
     clear_canvas()
     background.draw(400,300,800,600)
-
 
 
     for m in monsters:
