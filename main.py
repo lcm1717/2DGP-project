@@ -22,6 +22,7 @@ key_image=load_image('key.png')
 attack2_character= load_image('Attack_2.png')
 background2= load_image('map2.png')
 monster2_image= load_image('monster2.png')
+background3= load_image('map3.png')
 
 attack_state=False
 attack_frame=0
