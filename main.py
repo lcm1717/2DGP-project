@@ -194,6 +194,11 @@ while running:
             if game_world.collide(boy_bb,m.get_bb()):
                 if m.collision_start_time is None:
                     m.collision_start_time = current_time
+                elif current_time - m.collision_start_time >= PLAYER_KILL_TIME:
+                    player_hp -= 1
+                    m.collision_start_time = None
+                    if player_hp <= 0:
+                        running = False
 
         if attack_state:
             for m in monsters:
