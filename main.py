@@ -21,6 +21,7 @@ attack_character = load_image('Attack_1.png')
 key_image=load_image('key.png')
 attack2_character= load_image('Attack_2.png')
 background2= load_image('map2.png')
+monster2_image= load_image('monster2.png')
 
 attack_state=False
 attack_frame=0
@@ -88,7 +89,7 @@ class Key:
         self.collision_time=0
     def draw(self):
         key_image.draw(self.x,self.y,50,50)
-        draw_rectangle(*self.get_bb())
+
 
     def get_bb(self):
         return self.x-self.bb_width/2,self.y-self.bb_height/2,self.x+self.bb_width/2,self.y+self.bb_height/2
@@ -114,7 +115,7 @@ class monster:
 
     def draw(self):
         self.image.clip_draw(self.frame*45,0,45,60,self.x,self.y,self.width,self.height)
-        draw_rectangle(*self.get_bb())
+
 
 
 monsters = [monster() for i in range(4)]
@@ -168,9 +169,9 @@ while running:
     if not monsters and not keys and current_stage==1:
         current_stage+=1
         background= background2
+        monsters = [monster2() for i in range (5)]
     clear_canvas()
     background.draw(400,300,800,600)
-    draw_rectangle(*boy_bb)
 
 
 
@@ -208,6 +209,6 @@ while running:
 
 
     update_canvas()
-    delay(0.05)
+    delay(0.03)
 
 close_canvas()
