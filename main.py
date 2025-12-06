@@ -29,6 +29,7 @@ key_attack_state=False
 key_attack_frame=0
 face_dir=1
 collision=20
+player_hp=3
 
 def get_boy_bb(cx,cy):
     return cx - 30, cy - 40, cx + 30, cy + 40
@@ -170,21 +171,26 @@ while running:
             key.collision_time=get_time()
         if key.collided and get_time()-key.collision_time>=1.5:
             keys_to_remove.append(key)
+    if current_stage == 1:
+        if attack_state:
+            for m in monsters:
+                monster_bb = m.get_bb()
+                if game_world.collide(boy_bb,monster_bb):
+                    m.collision_frame+=1
 
-    if attack_state:
-        for m in monsters:
-            monster_bb = m.get_bb()
-            if game_world.collide(boy_bb,monster_bb):
-                m.collision_frame+=1
+                    if m.collision_frame >= collision:
+                        monsters_to_remove.append(m)
 
-                if m.collision_frame >= collision:
-                    monsters_to_remove.append(m)
-
-            else:
+                else:
+                    m.collision_frame=0
+        else:
+            for m in monsters:
                 m.collision_frame=0
-    else:
+    elif current_stage == 2:
         for m in monsters:
-            m.collision_frame=0
+            if game_world.collide(boy_bb,m.get_bb()):
+                m.hit_count+=1
+                if m.hit_count>=m.hit_threshold:
     monsters= [m for m in monsters if m not in monsters_to_remove]
     keys= [k for k in keys if k not in keys_to_remove]
     if not monsters and not keys and current_stage==1:
