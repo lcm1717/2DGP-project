@@ -206,6 +206,8 @@ while running:
                 elif current_time-m.collision_start_time>=5.0:
                     player_hp -=1
                     m.collision_start_time = None
+                    if player_hp <= 0:
+                        running = False
         if attack_state:
             for m in monsters:
                 monster_bb = m.get_bb()
