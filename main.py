@@ -30,8 +30,9 @@ key_attack_frame=0
 face_dir=1
 collision=20
 player_hp=3
-MONSTER_KILL_TIME=3.0
-PLAYER_KILL_TIME=5.0
+MONSTER_KILL_TIME=1.0
+KEY_KILL_TIME=1.0
+PLAYER_KILL_TIME=2.0
 
 def get_boy_bb(cx,cy):
     return cx - 30, cy - 40, cx + 30, cy + 40
@@ -89,10 +90,9 @@ class Key:
         self.bb_width=30
         self.bb_height=30
         self.collided=False
-        self.collision_time=0
+        self.kill_start_time=None
     def draw(self):
         key_image.draw(self.x,self.y,50,50)
-
 
     def get_bb(self):
         return self.x-self.bb_width/2,self.y-self.bb_height/2,self.x+self.bb_width/2,self.y+self.bb_height/2
@@ -102,7 +102,7 @@ class Key:
 class monster:
     def __init__(self):
         self.x, self.y = random.randint(0,700),random.randint(0,500)
-        self.frame = random.randint(0,4)
+        self.frame = random.randint(0,5)
         self.image = load_image('monster1.png')
         self.collision_frame=0
         self.width =60
@@ -143,7 +143,7 @@ class monster2:
 
 
 
-monsters = [monster() for i in range(4)]
+monsters = [monster() for i in range(5)]
 keys=[Key() for i in range(2)]
 
 running = True
@@ -169,27 +169,29 @@ while running:
     current_time = get_time()
     for key in keys:
         key_bb = key.get_bb()
-        if key_attack_state and key.collided == False and game_world.collide(boy_bb,key_bb):
-            key.collided=True
-            key.collision_time=get_time()
-        if key.collided and get_time()-key.collision_time>=1.5:
-            keys_to_remove.append(key)
-
-        if attack_state:
-            for m in monsters:
-                monster_bb = m.get_bb()
-                if game_world.collide(boy_bb,monster_bb):
-                    if m.kill_start_time is None:
-                        m.kill_start_time = current_time
-                    if current_time-m.kill_start_time >=MONSTER_KILL_TIME:
-                        monsters_to_remove.append(m)
-                else:
-                    m.kill_start_time = None
+        if key_attack_state and game_world.collide(boy_bb,key_bb):
+            if key.kill_start_time is None:
+                key.kill_start_time = current_time
+            if current_time-key.kill_start_time >= KEY_KILL_TIME:
+                keys_to_remove.append(key)
         else:
-            for m in monsters:
+            key.kill_start_time = None
+
+    if attack_state:
+        for m in monsters:
+            monster_bb = m.get_bb()
+            if game_world.collide(boy_bb,monster_bb):
+                if m.kill_start_time is None:
+                    m.kill_start_time = current_time
+                if current_time-m.kill_start_time >=MONSTER_KILL_TIME:
+                    monsters_to_remove.append(m)
+            else:
                 m.kill_start_time = None
+    else:
+        for m in monsters:
+            m.kill_start_time = None
+
     if current_stage ==2:
-        global player_hp
         for m in monsters:
             if game_world.collide(boy_bb,m.get_bb()):
                 if m.collision_start_time is None:
@@ -199,33 +201,9 @@ while running:
                     m.collision_start_time = None
                     if player_hp <= 0:
                         running = False
-
-        if attack_state:
-            for m in monsters:
-                monster_bb = m.get_bb()
-                if game_world.collide(boy_bb,m.get_bb()):
-                    m.hit_count+=1
-                    if m.collision_frame >= collision:
-                        monsters_to_remove.append(m)
-                else:
-                    m.collision_frame=0
-        else:
-            for m in monsters:
-                m.collision_frame=0
-
-        for m in monster:
-            if game_world.collide(boy_bb,m.get_bb()):
-                current_time = get_time()
-                if m.collision_start_time is None:
-                    m.collision_start_time = current_time
-                elif current_time-m.collision_start_time>=5.0:
-                    player_hp -=1
+            else:
+                if m.collision_start_time is not None:
                     m.collision_start_time = None
-                    if player_hp <= 0:
-                        running = False
-        else:
-            if m.collision_start_time is not None:
-                m.collision_start_time = None
 
     monsters= [m for m in monsters if m not in monsters_to_remove]
     keys= [k for k in keys if k not in keys_to_remove]
