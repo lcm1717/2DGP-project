@@ -185,6 +185,9 @@ while running:
                         monsters_to_remove.append(m)
                 else:
                     m.kill_start_time = None
+        else:
+            for m in monsters:
+                m.kill_start_time = None
 
                     if m.collision_frame >= collision:
                         monsters_to_remove.append(m)
