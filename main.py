@@ -116,6 +116,29 @@ class monster:
     def draw(self):
         self.image.clip_draw(self.frame*45,0,45,60,self.x,self.y,self.width,self.height)
 
+class monster2:
+    def __init__(self):
+        self.x, self.y = random.randint(0,700),random.randint(0,500)
+        self.frame = random.randint(0,3)
+        self.image = monster2_image
+        self.collision_frame=0
+        self.clip_width=36
+        self.clip_height=36
+        self.width =60
+        self.height =60
+        self.bb_width=20
+        self.bb_height=20
+        self.clip_y=0
+
+    def update(self):
+        self.frame = (self.frame + 1) % 4
+
+    def get_bb(self):
+        return self.x-self.bb_width/2,self.y-self.bb_height/2,self.x+self.bb_width/2,self.y+self.bb_height/2
+
+    def draw(self):
+        self.image.clip_draw(self.frame* self.clip_width,self.clip_y,self.clip_width,self.clip_height,self.x,self.y,self.width,self.height)
+
 
 
 monsters = [monster() for i in range(4)]
@@ -136,8 +159,8 @@ while running:
         x = max(0, min(x, 800))
         y = max(0, min(y, 600))
 
-    for monster in monsters:
-        monster.update()
+    for m in monsters:
+        m.update()
     boy_bb=get_boy_bb(x,y)
     monsters_to_remove=[]
     keys_to_remove=[]
@@ -151,19 +174,19 @@ while running:
             keys_to_remove.append(key)
 
     if attack_state:
-        for monster in monsters:
-            monster_bb = monster.get_bb()
+        for m in monsters:
+            monster_bb = m.get_bb()
             if game_world.collide(boy_bb,monster_bb):
-                monster.collision_frame+=1
+                m.collision_frame+=1
 
-                if monster.collision_frame >= collision:
-                    monsters_to_remove.append(monster)
+                if m.collision_frame >= collision:
+                    monsters_to_remove.append(m)
 
             else:
-                monster.collision_frame=0
+                m.collision_frame=0
     else:
-        for monster in monsters:
-            monster.collision_frame=0
+        for m in monsters:
+            m.collision_frame=0
     monsters= [m for m in monsters if m not in monsters_to_remove]
     keys= [k for k in keys if k not in keys_to_remove]
     if not monsters and not keys and current_stage==1:
@@ -175,8 +198,8 @@ while running:
 
 
 
-    for monster in monsters:
-        monster.draw()
+    for m in monsters:
+        m.draw()
     for key in keys:
         key.draw()
 
