@@ -118,18 +118,14 @@ class monster:
 
 class monster2:
     def __init__(self):
-        self.x, self.y = random.randint(0,700),random.randint(0,500)
-        self.frame = random.randint(0,3)
-        self.image = monster2_image
-        self.collision_frame=0
-        self.clip_width=36
-        self.clip_height=36
-        self.width =60
-        self.height =60
-        self.bb_width=20
-        self.bb_height=20
-        self.clip_y=0
-
+        self.x, self.y = random.randint(0, 700), random.randint(0, 500)
+        self.frame = random.randint(0, 4)
+        self.image = load_image('monster2.png')
+        self.collision_frame = 0
+        self.width = 60
+        self.height = 60
+        self.bb_width = 20
+        self.bb_height = 20
     def update(self):
         self.frame = (self.frame + 1) % 4
 
@@ -137,7 +133,7 @@ class monster2:
         return self.x-self.bb_width/2,self.y-self.bb_height/2,self.x+self.bb_width/2,self.y+self.bb_height/2
 
     def draw(self):
-        self.image.clip_draw(self.frame* self.clip_width,self.clip_y,self.clip_width,self.clip_height,self.x,self.y,self.width,self.height)
+        self.image.clip_draw(self.frame * 40, 0, 36, 45, self.x, self.y, self.width, self.height)
 
 
 
@@ -193,6 +189,7 @@ while running:
         current_stage+=1
         background= background2
         monsters = [monster2() for i in range (5)]
+        keys = [Key() for i in range(1)]
     clear_canvas()
     background.draw(400,300,800,600)
 
