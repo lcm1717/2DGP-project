@@ -186,8 +186,9 @@ while running:
             for m in monsters:
                 m.collision_frame=0
     elif current_stage == 2:
-        if attack_state
+        if attack_state:
             for m in monsters:
+                monster_bb = m.get_bb()
                 if game_world.collide(boy_bb,m.get_bb()):
                     m.hit_count+=1
                     if m.collision_frame >= collision:
@@ -211,22 +212,10 @@ while running:
         else:
             if m.collision_start_time is not None:
                 m.collision_start_time = None
-        if attack_state:
-            for m in monsters:
-                monster_bb = m.get_bb()
-                if game_world.collide(boy_bb,monster_bb):
-                    m.collision_frame+=1
-
-                    if m.collision_frame >= collision:
-                        monsters_to_remove.append(m)
-                else:
-                    m.collision_frame=0
-        else:
-            for m in monsters:
-                m.collision_frame=0
 
     monsters= [m for m in monsters if m not in monsters_to_remove]
     keys= [k for k in keys if k not in keys_to_remove]
+
     if not monsters and not keys and current_stage==1:
         current_stage+=1
         background= background2
