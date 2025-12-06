@@ -208,6 +208,9 @@ while running:
                     m.collision_start_time = None
                     if player_hp <= 0:
                         running = False
+        else:
+            if m.collision_start_time is not None:
+                m.collision_start_time = None
         if attack_state:
             for m in monsters:
                 monster_bb = m.get_bb()
