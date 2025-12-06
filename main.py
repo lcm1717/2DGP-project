@@ -30,6 +30,8 @@ key_attack_frame=0
 face_dir=1
 collision=20
 player_hp=3
+MONSTER_KILL_TIME=3.0
+PLAYER_KILL_TIME=5.0
 
 def get_boy_bb(cx,cy):
     return cx - 30, cy - 40, cx + 30, cy + 40
@@ -107,6 +109,7 @@ class monster:
         self.height =60
         self.bb_width=20
         self.bb_height=20
+        self.kill_start_time=None
 
     def update(self):
         self.frame = (self.frame + 1) % 5
@@ -120,14 +123,15 @@ class monster:
 class monster2:
     def __init__(self):
         self.x, self.y = random.randint(0, 700), random.randint(0, 500)
-        self.frame = random.randint(0, 4)
-        self.image = load_image('monster2.png')
+        self.frame = random.randint(0, 3)
+        self.image = monster2_image
         self.collision_frame = 0
         self.width = 60
         self.height = 60
         self.bb_width = 20
         self.bb_height = 20
         self.collision_start_time = None
+        self.kill_start_time=None
     def update(self):
         self.frame = (self.frame + 1) % 4
 
@@ -162,7 +166,7 @@ while running:
     boy_bb=get_boy_bb(x,y)
     monsters_to_remove=[]
     keys_to_remove=[]
-
+    current_time = get_time()
     for key in keys:
         key_bb = key.get_bb()
         if key_attack_state and key.collided == False and game_world.collide(boy_bb,key_bb):
@@ -170,12 +174,15 @@ while running:
             key.collision_time=get_time()
         if key.collided and get_time()-key.collision_time>=1.5:
             keys_to_remove.append(key)
-    if current_stage == 1:
+
         if attack_state:
             for m in monsters:
                 monster_bb = m.get_bb()
                 if game_world.collide(boy_bb,monster_bb):
-                    m.collision_frame+=1
+                    if m.kill_start_time is None:
+                        m.kill_start_time = current_time
+                    if current_time-m.kill_start_time >=MONSTER_KILL_TIME:
+                        monsters_to_remove.append(m)
 
                     if m.collision_frame >= collision:
                         monsters_to_remove.append(m)
@@ -198,7 +205,7 @@ while running:
         else:
             for m in monsters:
                 m.collision_frame=0
-        global player_hp
+
         for m in monster:
             if game_world.collide(boy_bb,m.get_bb()):
                 current_time = get_time()
