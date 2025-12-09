@@ -99,12 +99,17 @@ heart_image=load_image('45005.png')
 game_over_image=load_image('38146.png')
 game_clear_image = load_image('38160.png')
 try:
+    bgm=load_music('bgm.mp3')
+    bgm.set_volume(30)
+except:
+    bgm = None
+try:
     attack_sound = load_wav('a_sound.ogg')
-    attack_sound.set_volume(32)
+    attack_sound.set_volume(35)
     attack2_sound= load_wav('s_sound.ogg')
-    attack2_sound.set_volume(32)
+    attack2_sound.set_volume(35)
     hit_sound = load_wav('hp_sound.ogg')
-    hit_sound.set_volume(32)
+    hit_sound.set_volume(35)
 except:
     attack_sound = None
     attack2_sound = None
@@ -414,6 +419,8 @@ frame = 0
 dir = 0
 y = 90
 dir_y = 0
+if bgm:
+    bgm.repeat_play()
 
 while running:
     handle_events()
