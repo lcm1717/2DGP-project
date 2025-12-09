@@ -71,6 +71,7 @@ current_stage =1
 MONSTER_DETECTION_RANGE = 200
 MONSTER_SPEED = 2
 AI_UPDATE_INTERVAL = 0.1
+MONSTER_ANIMATION_INTERVAL = 0.1
 
 open_canvas()
 background= load_image('map1.png')
@@ -173,9 +174,14 @@ class monster:
         self.bb_width=20
         self.bb_height=20
         self.kill_start_time=None
+        self.last_anim_update_time= get_time()
 
     def update(self):
-        self.frame = (self.frame + 1) % 5
+        current_time = get_time()
+        global MONSTER_ANIMATION_INTERVAL
+        if current_time - self.last_anim_update_time >= MONSTER_ANIMATION_INTERVAL:
+            self.frame = (self.frame + 1) % 5
+            self.last_anim_update_time = current_time
 
     def get_bb(self):
         return self.x-self.bb_width/2,self.y-self.bb_height/2,self.x+self.bb_width/2,self.y+self.bb_height/2
