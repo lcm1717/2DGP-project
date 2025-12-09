@@ -241,10 +241,32 @@ def set_random_location(self):
     distance = random.uniform(50,200)
     new_x = self.x + distance* math.cos(angle)
     new_y = self.y + distance* math.sin(angle)
-    self.target_x = max(0, min(new_x,800))
-    self.target_y = max(0, min(new_y,600))
+    self.target_x = max(0, min(new_x,750))
+    self.target_y = max(0, min(new_y,650))
     self.is_moving = True
     return BehaviorTree.SUCCESS
+
+def set_target_location(self,target_func):
+    self.target_x, self.target_y = target_func()
+    self.is_moving = True
+    return BehaviorTree.SUCCESS
+
+def move_to(self):
+    if not self.is_moving:
+        return BehaviorTree.SUCCESS
+    dx = self.target_x - self.x
+    dy = self.target_y - self.y
+    distance = math.sqrt(dx**2 + dy**2)
+    if distance < MONSTER_SPEED:
+        self.x = self.target_x
+        self.y = self.target_y
+        self.is_moving = False
+        return BehaviorTree.SUCCESS
+    self.dir_x = dx / distance
+    self.dir_y = dy / distance
+    self.x += self.dir_x * MONSTER_SPEED
+    self.y += self.dir_y * MONSTER_SPEED
+    return BehaviorTree.RUNNING
 
 
 monsters = [monster() for i in range(5)]
