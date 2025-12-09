@@ -279,8 +279,8 @@ class monster3:
         self.frame = random.randint(0, 7)
         self.image = monster3_image
         self.collision_frame = 0
-        self.width = 250
-        self.height = 250
+        self.width = 350
+        self.height = 350
         self.bb_width = 70
         self.bb_height = 70
         self.collision_start_time = None
@@ -367,10 +367,10 @@ class monster3:
         return self.x - self.bb_width / 2, self.y - self.bb_height / 2, self.x + self.bb_width / 2, self.y + self.bb_height / 2
 
     def draw(self):
-        left_x = self.frame * 80
+        left_x = self.frame * 70
         bottom_y = 210
-        clip_width = 60
-        clip_height = 160
+        clip_width = 45
+        clip_height = 180
         if self.dir_x < 0:
             self.image.clip_composite_draw(left_x, bottom_y, clip_width, clip_height, 0, 'h', self.x, self.y,
                                            self.width, self.height)
