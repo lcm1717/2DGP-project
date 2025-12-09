@@ -101,9 +101,14 @@ game_clear_image = load_image('38160.png')
 try:
     attack_sound = load_wav('a_sound.ogg')
     attack_sound.set_volume(32)
+    attack2_sound= load_wav('s_sound.ogg')
+    attack2_sound.set_volume(32)
+    hit_sound = load_wav('hp_sound.ogg')
+    hit_sound.set_volume(32)
 except:
     attack_sound = None
-
+    attack2_sound = None
+    hit_sound = None
 
 attack_state = False
 attack_frame = 0
@@ -168,6 +173,8 @@ def handle_events():
                 key_attack_state = True
                 attack_state = False
                 attack_frame = 0
+                if attack2_sound:
+                    attack2_sound.play()
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
                 dir -= 1
@@ -428,6 +435,8 @@ while running:
         if game_world.collide(boy_bb,p.get_bb()):
             player_hp-=1
             p.is_dead =True
+            if hit_sound:
+                hit_sound.play()
             if player_hp <=0:
                 if player_state =="RUNNING":
                     player_state="DEAD"
@@ -471,6 +480,8 @@ while running:
                 elif current_time - m.collision_start_time >= PLAYER_KILL_TIME:
                     player_hp -= 1
                     m.collision_start_time = None
+                    if hit_sound:
+                        hit_sound.play()
                     if player_hp <= 0:
                         if player_state == "RUNNING":
                             player_state="DEAD"
