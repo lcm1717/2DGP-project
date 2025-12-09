@@ -274,6 +274,11 @@ def update(self):
     if current_time - self.last_ai_update_time >= AI_UPDATE_INTERVAL:
         self.bt.run()
         self.last_ai_update_time = current_time
+def get_bb(self):
+    return self.x - self.bb_width / 2, self.y - self.bb_height / 2, self.x + self.bb_width / 2, self.y + self.bb_height / 2
+def draw(self):
+    self.image.clip_draw(self.frame * 80, 0, 80, 100, self.x, self.y, self.width, self.height)
+
 
 
 monsters = [monster() for i in range(5)]
@@ -290,6 +295,7 @@ dir_y=0
 
 while running:
     handle_events()
+    current_time = get_time()
     if not attack_state and not key_attack_state:
         x += dir * 5
         y += dir_y *5
@@ -301,7 +307,7 @@ while running:
     boy_bb=get_boy_bb(x,y)
     monsters_to_remove=[]
     keys_to_remove=[]
-    current_time = get_time()
+
     for key in keys:
         key_bb = key.get_bb()
         if key_attack_state and game_world.collide(boy_bb,key_bb):
@@ -326,7 +332,7 @@ while running:
         for m in monsters:
             m.kill_start_time = None
 
-    if current_stage ==2:
+    if current_stage ==2 or current_stage==3
         for m in monsters:
             if game_world.collide(boy_bb,m.get_bb()):
                 if m.collision_start_time is None:
