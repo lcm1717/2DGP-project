@@ -80,7 +80,7 @@ class GameWorld:
 game_world = GameWorld()
 current_stage = 1
 
-MONSTER_DETECTION_RANGE = 200
+MONSTER_DETECTION_RANGE = 400
 MONSTER_SPEED = 2
 AI_UPDATE_INTERVAL = 0.1
 MONSTER_ANIMATION_INTERVAL = 0.07
@@ -194,7 +194,29 @@ class Key:
     def get_bb(self):
         return self.x - self.bb_width / 2, self.y - self.bb_height / 2, self.x + self.bb_width / 2, self.y + self.bb_height / 2
 
+class Projectile:
+    def __init__(self,x,y,target_x,target_y):
+        self.x,self.y=x,y
+        dx=target_x-x
+        dy=target_y-y
+        distance = math.sqrt(dx**2+dy**2)
+        self.speed = 8
+        self.dir_x = (dx/distance)*self.speed if distance >0else 0
+        self.dir_y = (dy/distance)*self.speed if distance >0else 0
+        self.bb_width=10
+        self.bb_height=10
+        self.image = load_image('40333.png')
+        self.is_dead=False
 
+    def update(self):
+        self.x += self.dir_x
+        self.y += self.dir_y
+        if self.x <0 or self.x >800 or self.y <0 or self.y >600:
+            self.is_dead=True
+    def draw(self):
+        self.image.draw(self.x,self.y,20,20)
+    def get_bb(self):
+        return self.x - self.bb_width / 2, self.y - self.bb_height / 2, self.x + self.bb_width / 2, self.y + self.bb_height / 2
 class monster:
     def __init__(self):
         self.x, self.y = random.randint(100, 650), random.randint(0, 500)
@@ -275,12 +297,18 @@ class monster3:
     def build_behavior_tree(self):
         a_set_random = Action('랜덤위치설정', self.set_random_location)
         a_move_to_target = Action('목표위치이동', self.move_to)
-        a_move_to_boy = Action('소년추적위치설정', self.set_target_location, get_boy_pos)
+        a_shoot = Action('투사체발사',self.shoot_projectile)
+        c_can_shoot=Condition('투사체발사가능?',self.if_can_shoot)
         c_boy_nearby = Condition('소년근처에있는가?', self.if_boy_nearby, MONSTER_DETECTION_RANGE)
+        shoot_attack=Sequence('투사체공격',c_boy_nearby,c_can_shoot,a_shoot)
         wander = Sequence('배회행동', a_set_random, a_move_to_target)
-        chase_boy = Sequence('소년추적행동', c_boy_nearby, a_move_to_boy, a_move_to_target)
-        chase_or_wander = Selector('소년이 가까이있으면 추적하고 아니면 배회', chase_boy, wander)
-        self.bt = BehaviorTree(chase_or_wander)
+        attack_or_wander = Selector('공격 아니면 배회', shoot_attack,wander)
+        self.bt = BehaviorTree(attack_or_wander)
+        self.SHOOT_INTERVAL=1.5
+        self.last_shot_time= get_time()-self.SHOOT_INTERVAL
+
+    def if_can_shoot(self):
+        return get_time()-self.last_shot_time >= self.SHOOT_INTERVAL
 
     def if_boy_nearby(self, detection_range):
         boy_x, boy_y = get_boy_pos()
@@ -289,7 +317,7 @@ class monster3:
 
     def set_random_location(self):
         angle = random.uniform(0, 2 * math.pi)
-        distance = random.uniform(50, 200)
+        distance = random.uniform(100, 300)
         new_x = self.x + distance * math.cos(angle)
         new_y = self.y + distance * math.sin(angle)
 
@@ -346,6 +374,13 @@ class monster3:
                                            self.width, self.height)
         else:
             self.image.clip_draw(left_x, bottom_y, clip_width, clip_height, self.x, self.y, self.width, self.height)
+    def shoot_projectile(self):
+        global projectiles
+        boy_x,boy_y = get_boy_pos()
+        new_projectile=Projectile(self.x,self.y,boy_x,boy_y)
+        projectiles.append(new_projectile)
+        self.last_shot_time = get_time()
+        return BehaviorTree.SUCCESS
 def draw_hearts():
     global player_hp
     heart_size = 30
@@ -356,6 +391,7 @@ def draw_hearts():
 
 monsters = [monster() for i in range(5)]
 keys = [Key() for i in range(2)]
+projectiles=[]
 
 running = True
 x = 800 // 2
@@ -378,7 +414,23 @@ while running:
     boy_bb = get_boy_bb(x, y)
     monsters_to_remove = []
     keys_to_remove = []
-
+    projectiles_to_remove = []
+    for p in projectiles:
+        p.update()
+        if game_world.collide(boy_bb,p.get_bb()):
+            player_hp-=1
+            p.is_dead =True
+            if player_hp <=0:
+                if player_state =="RUNNING":
+                    player_state="DEAD"
+                    dead_animation_start_time = current_time
+                    dir=0
+                    dir_y=0
+                    attack_state=False
+                    key_attack_state=False
+        if p.is_dead:
+            projectiles_to_remove.append(p)
+    projectiles = [p for p in projectiles if p not in projectiles_to_remove]
     for key in keys:
         key_bb = key.get_bb()
         if key_attack_state and game_world.collide(boy_bb, key_bb):
@@ -467,6 +519,8 @@ while running:
         m.draw()
     for key in keys:
         key.draw()
+    for p in projectiles:
+        p.draw()
     draw_hearts()
 
     if player_state == "DEAD":
