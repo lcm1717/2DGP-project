@@ -9,6 +9,13 @@ class BehaviorTree:
     def run(self):
         self.tick_counter +=1
         return self.root.run()
+class Action:
+    def __init__(self,name,action_func,*args):
+        self.name = name
+        self.action_func = action_func
+        self.args = args
+    def run(self):
+        return self.action_func(*self.args)
 class GameWorld:
     def collide(self,a_bb,b_bb):
         left_a, bottom_a, right_a, top_a = a_bb
