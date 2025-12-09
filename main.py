@@ -201,8 +201,13 @@ class monster2:
         self.bb_height = 20
         self.collision_start_time = None
         self.kill_start_time=None
+        self.last_anim_update_time = get_time()
     def update(self):
-        self.frame = (self.frame + 1) % 4
+        current_time= get_time()
+        global MONSTER_ANIMATION_INTERVAL
+        if current_time - self.last_anim_update_time >= MONSTER_ANIMATION_INTERVAL:
+            self.frame = (self.frame + 1) % 4
+            self.last_anim_update_time = current_time
 
     def get_bb(self):
         return self.x-self.bb_width/2,self.y-self.bb_height/2,self.x+self.bb_width/2,self.y+self.bb_height/2
