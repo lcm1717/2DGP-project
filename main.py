@@ -68,6 +68,10 @@ class GameWorld:
 game_world = GameWorld()
 current_stage =1
 
+MONSTER_DETECTION_RANGE = 200
+MONSTER_SPEED = 2
+AI_UPDATE_INTERVAL = 0.1
+
 open_canvas()
 background= load_image('map1.png')
 character = load_image('Idle.png')
