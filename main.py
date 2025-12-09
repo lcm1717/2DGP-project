@@ -455,6 +455,10 @@ while running:
         if player_state == "RUNNING":
             player_state = "GAME_CLEAR_DISPLAY"
             game_clear_display_start_time = current_time
+    if player_state == "GAME_CLEAR_DISPLAY":
+        time_elapsed = current_time - game_clear_display_start_time
+        if time_elapsed >= GAME_CLEAR_DISPLAY_DURATION:
+            running = False
 
     clear_canvas()
     background.draw(400, 300, 800, 600)
@@ -468,7 +472,9 @@ while running:
     if player_state == "DEAD":
         dead_character.clip_draw(dead_frame *40,0,88,90,x,y)
     elif player_state == "GAME_OVER_DISPLAY":
-        game_over_image.draw(400,300,600,300)
+        game_over_image.draw(400,300,400,200)
+    elif player_state == "GAME_CLEAR_DISPLAY":
+        game_clear_image.draw(400,300,400,200)
 
     elif attack_state:
         if face_dir == 1:
