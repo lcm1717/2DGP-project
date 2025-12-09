@@ -82,7 +82,7 @@ attack2_character= load_image('Attack_2.png')
 background2= load_image('map2.png')
 monster2_image= load_image('monster2.png')
 background3= load_image('map3.png')
-
+monster3_image= load_image('bossmonster.png')
 attack_state=False
 attack_frame=0
 key_attack_state=False
@@ -201,6 +201,25 @@ class monster2:
     def draw(self):
         self.image.clip_draw(self.frame * 40, 0, 36, 45, self.x, self.y, self.width, self.height)
 
+class monster3:
+    def __init__(self):
+        self.x,self.y=400,300
+        self.frame = random.randint(0,8)
+        self.image= monster3_image
+        self.collision_frame=0
+        self.width =100
+        self.height =100
+        self.bb_width=40
+        self.bb_height=40
+        self.collision_start_time=None
+        self.kill_start_time=None
+
+        self.target_x,self.target_y= self.x,self.y
+        self.dir_x=0
+        self.dir_y=0
+        self.is_moving=False
+        self.last_ai_update_time= get_time()
+        self.build_behavior_tree()
 
 
 monsters = [monster() for i in range(5)]
