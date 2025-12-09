@@ -268,6 +268,13 @@ def move_to(self):
     self.y += self.dir_y * MONSTER_SPEED
     return BehaviorTree.RUNNING
 
+def update(self):
+    self.frame = (self.frame + 1) % 9
+    current_time = get_time()
+    if current_time - self.last_ai_update_time >= AI_UPDATE_INTERVAL:
+        self.bt.run()
+        self.last_ai_update_time = current_time
+
 
 monsters = [monster() for i in range(5)]
 keys=[Key() for i in range(2)]
