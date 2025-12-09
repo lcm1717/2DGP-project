@@ -97,7 +97,6 @@ monster2_image = load_image('monster2.png')
 background3 = load_image('map3.png')
 monster3_image = load_image('bossmonster.png')
 heart_image=load_image('45005.png')
-
 attack_state = False
 attack_frame = 0
 key_attack_state = False
@@ -196,6 +195,7 @@ class monster:
     def update(self):
         current_time = get_time()
         global MONSTER_ANIMATION_INTERVAL
+
         if current_time - self.last_anim_update_time >= MONSTER_ANIMATION_INTERVAL:
             self.frame = (self.frame + 1) % 5
             self.last_anim_update_time = current_time
@@ -224,7 +224,7 @@ class monster2:
     def update(self):
         current_time = get_time()
         global MONSTER_ANIMATION_INTERVAL
-
+        # 몬스터 애니메이션 딜레이 적용
         if current_time - self.last_anim_update_time >= MONSTER_ANIMATION_INTERVAL:
             self.frame = (self.frame + 1) % 4
             self.last_anim_update_time = current_time
@@ -248,8 +248,7 @@ class monster3:
         self.bb_height = 70
         self.collision_start_time = None
         self.kill_start_time = None
-        self.max_hp=10
-        self.current_hp=10
+
         self.target_x, self.target_y = self.x, self.y
         self.dir_x = 0
         self.dir_y = 0
@@ -278,6 +277,7 @@ class monster3:
         distance = random.uniform(50, 200)
         new_x = self.x + distance * math.cos(angle)
         new_y = self.y + distance * math.sin(angle)
+
         self.target_x = max(0, min(new_x, 800))
         self.target_y = max(0, min(new_y, 600))
         self.is_moving = True
@@ -307,6 +307,7 @@ class monster3:
 
     def update(self):
         current_time = get_time()
+
         if current_time - self.last_ai_update_time >= AI_UPDATE_INTERVAL:
             self.bt.run()
             self.last_ai_update_time = current_time
@@ -332,10 +333,9 @@ class monster3:
             self.image.clip_draw(left_x, bottom_y, clip_width, clip_height, self.x, self.y, self.width, self.height)
 def draw_hearts():
     global player_hp
-    heart_size = 35
+    heart_size = 30
     start_x =10
-    start_y=570
-    spacing = heart_size +10
+    start_y=580
     for i in range(player_hp):
         heart_image.draw(start_x + i * heart_size + 10, start_y, heart_size, heart_size)
 
@@ -378,14 +378,10 @@ while running:
         for m in monsters:
             monster_bb = m.get_bb()
             if game_world.collide(boy_bb, monster_bb):
-                if isinstance(m,monster3):
-                    if m.kill_start_time is None:
-                        m.kill_start_time = current_time
-                    if current_time - m.kill_start_time >= MONSTER_KILL_TIME:
-                        m.current_hp -=1
-                        m.kill_start_time = None
-                        if m.current_hp <= 0:
-                            monsters_to_remove.append(m)
+                if m.kill_start_time is None:
+                    m.kill_start_time = current_time
+                if current_time - m.kill_start_time >= MONSTER_KILL_TIME:
+                    monsters_to_remove.append(m)
             else:
                 m.kill_start_time = None
     else:
@@ -433,7 +429,6 @@ while running:
     for key in keys:
         key.draw()
     draw_hearts()
-
 
     if attack_state:
         if face_dir == 1:
