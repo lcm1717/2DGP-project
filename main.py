@@ -233,6 +233,7 @@ class monster3:
         self.dir_y=0
         self.is_moving=False
         self.last_ai_update_time= get_time()
+        self.last_anim_update_time= get_time()
         self.build_behavior_tree()
 
     def build_behavior_tree(self):
@@ -283,11 +284,14 @@ class monster3:
         return BehaviorTree.RUNNING
 
     def update(self):
-        self.frame = (self.frame + 1) % 8
         current_time = get_time()
         if current_time - self.last_ai_update_time >= AI_UPDATE_INTERVAL:
             self.bt.run()
             self.last_ai_update_time = current_time
+        global MONSTER_ANIMATION_INTERVAL
+        if current_time - self.last_anim_update_time >= MONSTER_ANIMATION_INTERVAL:
+            self.frame = (self.frame + 1) % 8
+            self.last_anim_update_time = current_time
     def get_bb(self):
         return self.x - self.bb_width / 2, self.y - self.bb_height / 2, self.x + self.bb_width / 2, self.y + self.bb_height / 2
     def draw(self):
