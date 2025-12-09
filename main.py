@@ -9,6 +9,7 @@ class BehaviorTree:
     def run(self):
         self.tick_counter +=1
         return self.root.run()
+
 class Action:
     def __init__(self,name,action_func,*args):
         self.name = name
@@ -42,6 +43,17 @@ class Sequence(Composite):
                 return status
         return BehaviorTree.SUCCESS
 
+class Selector(Composite):
+    def run(self):
+        for child in self.children:
+            status = child.run()
+            if status != BehaviorTree.FAILURE:
+                return status
+        return BehaviorTree.FAILURE
+
+BehaviorTree.SUCCESS =1
+BehaviorTree.FAILURE =2
+BehaviorTree.RUNNING =3
 
 class GameWorld:
     def collide(self,a_bb,b_bb):
