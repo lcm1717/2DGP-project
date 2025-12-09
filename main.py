@@ -28,6 +28,13 @@ class Condition:
             return BehaviorTree.SUCCESS
         else:
             return BehaviorTree.FAILURE
+
+class Composite:
+    def __init__(self,name):
+        self.name = name
+        self.children = children
+
+
 class GameWorld:
     def collide(self,a_bb,b_bb):
         left_a, bottom_a, right_a, top_a = a_bb
