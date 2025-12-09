@@ -231,6 +231,20 @@ def build_behavior_tree(self):
     chase_or_wander = Selector('소년이 가까이있으면 추적하고 아니면 배회',chase_boy,wander)
     self.bt= BehaviorTree(chase_or_wander)
 
+def if_boy_nearby(self,detection_range):
+    boy_x,boy_y = get_boy_pos()
+    distance = math.sqrt((self.x-boy_x)**2 + (self.y-boy_y)**2)
+    return distance < detection_range
+
+def set_random_location(self):
+    angle = random.uniform(0, 2*math.pi)
+    distance = random.uniform(50,200)
+    new_x = self.x + distance* math.cos(angle)
+    new_y = self.y + distance* math.sin(angle)
+    self.target_x = max(0, min(new_x,800))
+    self.target_y = max(0, min(new_y,600))
+    self.is_moving = True
+    return BehaviorTree.SUCCESS
 
 
 monsters = [monster() for i in range(5)]
