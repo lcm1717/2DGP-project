@@ -34,6 +34,14 @@ class Composite:
         self.name = name
         self.children = children
 
+class Sequence(Composite):
+    def run(self):
+        for child in self.children:
+            status = child.run()
+            if status != BehaviorTree.SUCCESS:
+                return status
+        return BehaviorTree.SUCCESS
+
 
 class GameWorld:
     def collide(self,a_bb,b_bb):
