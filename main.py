@@ -98,6 +98,7 @@ background3 = load_image('map3.png')
 monster3_image = load_image('bossmonster.png')
 heart_image=load_image('45005.png')
 game_over_image=load_image('38146.png')
+game_clear_image = load_image('38160.png')
 
 
 attack_state = False
@@ -118,6 +119,8 @@ dead_animation_start_time =0
 DEAD_ANIMATION_DURATION = 1.0
 game_over_display_start_time=0
 GAME_OVER_DISPLAY_DURATION=1.0
+game_clear_display_start_time=0
+GAME_CLEAR_DISPLAY_DURATION=1.0
 
 
 def get_boy_bb(cx, cy):
@@ -449,7 +452,9 @@ while running:
 
 
     if current_stage == 3 and not monsters:
-        running = False
+        if player_state == "RUNNING":
+            player_state = "GAME_CLEAR_DISPLAY"
+            game_clear_display_start_time = current_time
 
     clear_canvas()
     background.draw(400, 300, 800, 600)
