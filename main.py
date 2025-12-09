@@ -31,7 +31,7 @@ class Condition:
             return BehaviorTree.FAILURE
 
 class Composite:
-    def __init__(self,name):
+    def __init__(self,name,*children):
         self.name = name
         self.children = children
 
@@ -96,6 +96,9 @@ PLAYER_KILL_TIME=2.0
 
 def get_boy_bb(cx,cy):
     return cx - 30, cy - 40, cx + 30, cy + 40
+def get_boy_pos():
+    global x,y
+    return x,y
 
 
 def handle_events():
@@ -161,7 +164,7 @@ class Key:
 
 class monster:
     def __init__(self):
-        self.x, self.y = random.randint(0,700),random.randint(0,500)
+        self.x, self.y = random.randint(10,700),random.randint(0,500)
         self.frame = random.randint(0,5)
         self.image = load_image('monster1.png')
         self.collision_frame=0
@@ -182,7 +185,7 @@ class monster:
 
 class monster2:
     def __init__(self):
-        self.x, self.y = random.randint(0, 700), random.randint(0, 500)
+        self.x, self.y = random.randint(10, 700), random.randint(0, 500)
         self.frame = random.randint(0, 3)
         self.image = monster2_image
         self.collision_frame = 0
@@ -204,13 +207,13 @@ class monster2:
 class monster3:
     def __init__(self):
         self.x,self.y=400,300
-        self.frame = random.randint(0,8)
+        self.frame = random.randint(0,7)
         self.image= monster3_image
         self.collision_frame=0
-        self.width =100
-        self.height =100
-        self.bb_width=40
-        self.bb_height=40
+        self.width =250
+        self.height =250
+        self.bb_width=70
+        self.bb_height=70
         self.collision_start_time=None
         self.kill_start_time=None
 
@@ -221,64 +224,70 @@ class monster3:
         self.last_ai_update_time= get_time()
         self.build_behavior_tree()
 
-def build_behavior_tree(self):
-    a_set_random = Action('랜덤위치설정',self.set_random_location)
-    a_move_to_target = Action('목표위치이동',self.move_to)
-    a_move_to_boy= Action('소년추적위치설정',self.set_target_location,get_boy_pos)
-    c_boy_nearby= Condition('소년근처에있는가?',self.if_boy_nearby,MONSTER_DETECTION_RANGE)
-    wander = Sequence('배회행동',a_set_random,a_move_to_target)
-    chase_boy= Sequence('소년추적행동',c_boy_nearby,a_move_to_boy,a_move_to_target)
-    chase_or_wander = Selector('소년이 가까이있으면 추적하고 아니면 배회',chase_boy,wander)
-    self.bt= BehaviorTree(chase_or_wander)
+    def build_behavior_tree(self):
+        a_set_random = Action('랜덤위치설정',self.set_random_location)
+        a_move_to_target = Action('목표위치이동',self.move_to)
+        a_move_to_boy= Action('소년추적위치설정',self.set_target_location,get_boy_pos)
+        c_boy_nearby= Condition('소년근처에있는가?',self.if_boy_nearby,MONSTER_DETECTION_RANGE)
+        wander = Sequence('배회행동',a_set_random,a_move_to_target)
+        chase_boy= Sequence('소년추적행동',c_boy_nearby,a_move_to_boy,a_move_to_target)
+        chase_or_wander = Selector('소년이 가까이있으면 추적하고 아니면 배회',chase_boy,wander)
+        self.bt= BehaviorTree(chase_or_wander)
 
-def if_boy_nearby(self,detection_range):
-    boy_x,boy_y = get_boy_pos()
-    distance = math.sqrt((self.x-boy_x)**2 + (self.y-boy_y)**2)
-    return distance < detection_range
+    def if_boy_nearby(self,detection_range):
+        boy_x,boy_y = get_boy_pos()
+        distance = math.sqrt((self.x-boy_x)**2 + (self.y-boy_y)**2)
+        return distance < detection_range
 
-def set_random_location(self):
-    angle = random.uniform(0, 2*math.pi)
-    distance = random.uniform(50,200)
-    new_x = self.x + distance* math.cos(angle)
-    new_y = self.y + distance* math.sin(angle)
-    self.target_x = max(0, min(new_x,750))
-    self.target_y = max(0, min(new_y,650))
-    self.is_moving = True
-    return BehaviorTree.SUCCESS
-
-def set_target_location(self,target_func):
-    self.target_x, self.target_y = target_func()
-    self.is_moving = True
-    return BehaviorTree.SUCCESS
-
-def move_to(self):
-    if not self.is_moving:
+    def set_random_location(self):
+        angle = random.uniform(0, 2*math.pi)
+        distance = random.uniform(50,200)
+        new_x = self.x + distance* math.cos(angle)
+        new_y = self.y + distance* math.sin(angle)
+        self.target_x = max(0, min(new_x,750))
+        self.target_y = max(0, min(new_y,650))
+        self.is_moving = True
         return BehaviorTree.SUCCESS
-    dx = self.target_x - self.x
-    dy = self.target_y - self.y
-    distance = math.sqrt(dx**2 + dy**2)
-    if distance < MONSTER_SPEED:
-        self.x = self.target_x
-        self.y = self.target_y
-        self.is_moving = False
+
+    def set_target_location(self,target_func):
+        self.target_x, self.target_y = target_func()
+        self.is_moving = True
         return BehaviorTree.SUCCESS
-    self.dir_x = dx / distance
-    self.dir_y = dy / distance
-    self.x += self.dir_x * MONSTER_SPEED
-    self.y += self.dir_y * MONSTER_SPEED
-    return BehaviorTree.RUNNING
 
-def update(self):
-    self.frame = (self.frame + 1) % 9
-    current_time = get_time()
-    if current_time - self.last_ai_update_time >= AI_UPDATE_INTERVAL:
-        self.bt.run()
-        self.last_ai_update_time = current_time
-def get_bb(self):
-    return self.x - self.bb_width / 2, self.y - self.bb_height / 2, self.x + self.bb_width / 2, self.y + self.bb_height / 2
-def draw(self):
-    self.image.clip_draw(self.frame * 80, 0, 80, 100, self.x, self.y, self.width, self.height)
+    def move_to(self):
+        if not self.is_moving:
+            return BehaviorTree.SUCCESS
+        dx = self.target_x - self.x
+        dy = self.target_y - self.y
+        distance = math.sqrt(dx**2 + dy**2)
+        if distance < MONSTER_SPEED:
+            self.x = self.target_x
+            self.y = self.target_y
+            self.is_moving = False
+            return BehaviorTree.SUCCESS
+        self.dir_x = dx / distance
+        self.dir_y = dy / distance
+        self.x += self.dir_x * MONSTER_SPEED
+        self.y += self.dir_y * MONSTER_SPEED
+        return BehaviorTree.RUNNING
 
+    def update(self):
+        self.frame = (self.frame + 1) % 8
+        current_time = get_time()
+        if current_time - self.last_ai_update_time >= AI_UPDATE_INTERVAL:
+            self.bt.run()
+            self.last_ai_update_time = current_time
+    def get_bb(self):
+        return self.x - self.bb_width / 2, self.y - self.bb_height / 2, self.x + self.bb_width / 2, self.y + self.bb_height / 2
+    def draw(self):
+        left_x= self.frame * 80
+        bottom_y=210
+        clip_width=60
+        clip_height=130
+        if self.dir_x < 0:
+            self.image.clip_composite_draw(left_x,bottom_y,clip_width,clip_height,0,'h',self.x,self.y,self.width,self.height)
+        else:
+            self.image.clip_draw(left_x,bottom_y,clip_width,clip_height,self.x,self.y,self.width,self.height)
 
 
 monsters = [monster() for i in range(5)]
@@ -332,7 +341,7 @@ while running:
         for m in monsters:
             m.kill_start_time = None
 
-    if current_stage ==2 or current_stage==3
+    if current_stage ==2 or current_stage==3:
         for m in monsters:
             if game_world.collide(boy_bb,m.get_bb()):
                 if m.collision_start_time is None:
@@ -358,8 +367,11 @@ while running:
         elif current_stage==2:
             current_stage+=1
             background= background3
-            monsters =[]
+            monsters =[monster3()]
             keys =[]
+    if current_stage==3 and not monster:
+        running = False
+
 
 
 
