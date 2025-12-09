@@ -1,5 +1,14 @@
 from pico2d import*
 import random
+import math
+class BehaviorTree:
+    def __init__(self,root):
+        self.root = root
+        self.tick_counter = 0
+
+    def run(self):
+        self.tick_counter +=1
+        return self.root.run()
 class GameWorld:
     def collide(self,a_bb,b_bb):
         left_a, bottom_a, right_a, top_a = a_bb
