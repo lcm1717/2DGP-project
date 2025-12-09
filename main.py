@@ -96,7 +96,8 @@ background2 = load_image('map2.png')
 monster2_image = load_image('monster2.png')
 background3 = load_image('map3.png')
 monster3_image = load_image('bossmonster.png')
-heart_image=load_image('hp.png')
+heart_image=load_image('45005.png')
+
 attack_state = False
 attack_frame = 0
 key_attack_state = False
@@ -330,8 +331,8 @@ class monster3:
             self.image.clip_draw(left_x, bottom_y, clip_width, clip_height, self.x, self.y, self.width, self.height)
 def draw_hearts():
     global player_hp
-    heart_size = 20
-    start_x =30
+    heart_size = 35
+    start_x =10
     start_y=570
     spacing = heart_size +10
     for i in range(player_hp):
@@ -427,6 +428,7 @@ while running:
     for key in keys:
         key.draw()
     draw_hearts()
+
 
     if attack_state:
         if face_dir == 1:
