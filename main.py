@@ -16,6 +16,18 @@ class Action:
         self.args = args
     def run(self):
         return self.action_func(*self.args)
+
+class Condition:
+    def __init__(self,name,condition_func,*args):
+        self.name = name
+        self.condition_func = condition_func
+        self.args = args
+
+    def run(self):
+        if self.condition_func(*self.args):
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.FAILURE
 class GameWorld:
     def collide(self,a_bb,b_bb):
         left_a, bottom_a, right_a, top_a = a_bb
