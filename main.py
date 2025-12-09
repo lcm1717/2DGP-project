@@ -301,10 +301,12 @@ class monster3:
         c_can_shoot=Condition('투사체발사가능?',self.if_can_shoot)
         c_boy_nearby = Condition('소년근처에있는가?', self.if_boy_nearby, MONSTER_DETECTION_RANGE)
         shoot_attack=Sequence('투사체공격',c_boy_nearby,c_can_shoot,a_shoot)
+        a_move_to_boy = Action('소년위치로이동', self.set_target_location,get_boy_pos)
+        chase_boy=Sequence('소년추적행동',c_boy_nearby,a_move_to_boy,a_move_to_target)
         wander = Sequence('배회행동', a_set_random, a_move_to_target)
-        attack_or_wander = Selector('공격 아니면 배회', shoot_attack,wander)
-        self.bt = BehaviorTree(attack_or_wander)
-        self.SHOOT_INTERVAL=3
+        attack_chase_or_wander = Selector('공격 아니면 추적 아니면 배회', shoot_attack,chase_boy,wander)
+        self.bt = BehaviorTree(attack_chase_or_wander)
+        self.SHOOT_INTERVAL=2.5
         self.last_shot_time= get_time()-self.SHOOT_INTERVAL
 
     def if_can_shoot(self):
