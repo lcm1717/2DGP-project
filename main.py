@@ -2,7 +2,6 @@ from pico2d import *
 import random
 import math
 
-
 class BehaviorTree:
     def __init__(self, root):
         self.root = root
@@ -99,6 +98,11 @@ monster3_image = load_image('bossmonster.png')
 heart_image=load_image('45005.png')
 game_over_image=load_image('38146.png')
 game_clear_image = load_image('38160.png')
+try:
+    attack_sound = load_wav('a_sound.ogg')
+    attack_sound.set_volume(32)
+except:
+    attack_sound = None
 
 
 attack_state = False
@@ -158,6 +162,8 @@ def handle_events():
                 attack_state = True
                 key_attack_state = False
                 key_attack_frame = 0
+                if attack_sound:
+                    attack_sound.play()
             elif event.key == SDLK_s:
                 key_attack_state = True
                 attack_state = False
