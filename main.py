@@ -83,7 +83,7 @@ current_stage = 1
 MONSTER_DETECTION_RANGE = 400
 MONSTER_SPEED = 2
 AI_UPDATE_INTERVAL = 0.1
-MONSTER_ANIMATION_INTERVAL = 0.07
+MONSTER_ANIMATION_INTERVAL = 0.15
 
 open_canvas()
 background = load_image('map1.png')
@@ -200,7 +200,7 @@ class Projectile:
         dx=target_x-x
         dy=target_y-y
         distance = math.sqrt(dx**2+dy**2)
-        self.speed = 8
+        self.speed = 2
         self.dir_x = (dx/distance)*self.speed if distance >0else 0
         self.dir_y = (dy/distance)*self.speed if distance >0else 0
         self.bb_width=10
@@ -214,7 +214,7 @@ class Projectile:
         if self.x <0 or self.x >800 or self.y <0 or self.y >600:
             self.is_dead=True
     def draw(self):
-        self.image.draw(self.x,self.y,20,20)
+        self.image.draw(self.x,self.y,50,50)
     def get_bb(self):
         return self.x - self.bb_width / 2, self.y - self.bb_height / 2, self.x + self.bb_width / 2, self.y + self.bb_height / 2
 class monster:
@@ -304,7 +304,7 @@ class monster3:
         wander = Sequence('배회행동', a_set_random, a_move_to_target)
         attack_or_wander = Selector('공격 아니면 배회', shoot_attack,wander)
         self.bt = BehaviorTree(attack_or_wander)
-        self.SHOOT_INTERVAL=1.5
+        self.SHOOT_INTERVAL=3
         self.last_shot_time= get_time()-self.SHOOT_INTERVAL
 
     def if_can_shoot(self):
