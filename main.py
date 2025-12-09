@@ -83,7 +83,7 @@ current_stage = 1
 MONSTER_DETECTION_RANGE = 200
 MONSTER_SPEED = 2
 AI_UPDATE_INTERVAL = 0.1
-MONSTER_ANIMATION_INTERVAL = 0.07  # 몬스터 애니메이션 딜레이 설정 (0.07초)
+MONSTER_ANIMATION_INTERVAL = 0.07
 
 open_canvas()
 background = load_image('map1.png')
@@ -248,7 +248,8 @@ class monster3:
         self.bb_height = 70
         self.collision_start_time = None
         self.kill_start_time = None
-
+        self.max_hp=10
+        self.current_hp=10
         self.target_x, self.target_y = self.x, self.y
         self.dir_x = 0
         self.dir_y = 0
@@ -377,10 +378,14 @@ while running:
         for m in monsters:
             monster_bb = m.get_bb()
             if game_world.collide(boy_bb, monster_bb):
-                if m.kill_start_time is None:
-                    m.kill_start_time = current_time
-                if current_time - m.kill_start_time >= MONSTER_KILL_TIME:
-                    monsters_to_remove.append(m)
+                if isinstance(m,monster3):
+                    if m.kill_start_time is None:
+                        m.kill_start_time = current_time
+                    if current_time - m.kill_start_time >= MONSTER_KILL_TIME:
+                        m.current_hp -=1
+                        m.kill_start_time = None
+                        if m.current_hp <= 0:
+                            monsters_to_remove.append(m)
             else:
                 m.kill_start_time = None
     else:
