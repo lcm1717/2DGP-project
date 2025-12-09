@@ -221,6 +221,17 @@ class monster3:
         self.last_ai_update_time= get_time()
         self.build_behavior_tree()
 
+def build_behavior_tree(self):
+    a_set_random = Action('랜덤위치설정',self.set_random_location)
+    a_move_to_target = Action('목표위치이동',self.move_to)
+    a_move_to_boy= Action('소년추적위치설정',self.set_target_location,get_boy_pos)
+    c_boy_nearby= Condition('소년근처에있는가?',self.if_boy_nearby,MONSTER_DETECTION_RANGE)
+    wander = Sequence('배회행동',a_set_random,a_move_to_target)
+    chase_boy= Sequence('소년추적행동',c_boy_nearby,a_move_to_boy,a_move_to_target)
+    chase_or_wander = Selector('소년이 가까이있으면 추적하고 아니면 배회',chase_boy,wander)
+    self.bt= BehaviorTree(chase_or_wander)
+
+
 
 monsters = [monster() for i in range(5)]
 keys=[Key() for i in range(2)]
