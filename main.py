@@ -97,6 +97,7 @@ monster2_image = load_image('monster2.png')
 background3 = load_image('map3.png')
 monster3_image = load_image('bossmonster.png')
 heart_image=load_image('45005.png')
+
 attack_state = False
 attack_frame = 0
 key_attack_state = False
@@ -107,6 +108,12 @@ player_hp = 3
 MONSTER_KILL_TIME = 1.0
 KEY_KILL_TIME = 1.0
 PLAYER_KILL_TIME = 2.0
+
+dead_character = load_image('Dead.png')
+is_dead = False
+dead_frame = 0
+dead_animation_start_time =0
+DEAD_ANIMATION_DURATION = 1.0
 
 
 def get_boy_bb(cx, cy):
@@ -120,6 +127,8 @@ def get_boy_pos():
 
 def handle_events():
     global running, dir, dir_y, face_dir, attack_state, key_attack_state, attack_frame, key_attack_frame
+    if is_dead:
+        return
 
     events = get_events()
     for event in events:
@@ -224,7 +233,6 @@ class monster2:
     def update(self):
         current_time = get_time()
         global MONSTER_ANIMATION_INTERVAL
-        # 몬스터 애니메이션 딜레이 적용
         if current_time - self.last_anim_update_time >= MONSTER_ANIMATION_INTERVAL:
             self.frame = (self.frame + 1) % 4
             self.last_anim_update_time = current_time
@@ -352,7 +360,7 @@ dir_y = 0
 while running:
     handle_events()
     current_time = get_time()
-    if not attack_state and not key_attack_state:
+    if not is_dead and not attack_state and not key_attack_state:
         x += dir * 5
         y += dir_y * 5
         x = max(0, min(x, 800))
@@ -397,13 +405,27 @@ while running:
                     player_hp -= 1
                     m.collision_start_time = None
                     if player_hp <= 0:
-                        running = False
+                        if not is_dead:
+                            is_dead = True
+                            dead_animation_start_time = current_time
+                            dead_frame=0
+                            dir=0
+                            dir_y=0
+                            attack_state=False
+                            key_attack_state=False
+
             else:
                 if m.collision_start_time is not None:
                     m.collision_start_time = None
 
     monsters = [m for m in monsters if m not in monsters_to_remove]
     keys = [k for k in keys if k not in keys_to_remove]
+    if is_dead:
+        time_elapsed = current_time - dead_animation_start_time
+        frame_duration = DEAD_ANIMATION_DURATION /5
+        dead_frame = min(4,int(time_elapsed / frame_duration))
+        if time_elapsed >=DEAD_ANIMATION_DURATION:
+            running=False
 
     if not monsters and not keys:
         if current_stage == 1:
@@ -430,7 +452,10 @@ while running:
         key.draw()
     draw_hearts()
 
-    if attack_state:
+    if is_dead:
+        dead_character.clip_draw(dead_frame *40,0,88,90,x,y)
+
+    elif attack_state:
         if face_dir == 1:
             attack_character.clip_draw(attack_frame * 130, 0, 130, 100, x, y)
         else:
