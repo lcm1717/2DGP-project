@@ -97,6 +97,8 @@ monster2_image = load_image('monster2.png')
 background3 = load_image('map3.png')
 monster3_image = load_image('bossmonster.png')
 heart_image=load_image('45005.png')
+game_over_image=load_image('38146.png')
+
 
 attack_state = False
 attack_frame = 0
@@ -110,10 +112,12 @@ KEY_KILL_TIME = 1.0
 PLAYER_KILL_TIME = 2.0
 
 dead_character = load_image('Dead.png')
-is_dead = False
+player_state="RUNNING"
 dead_frame = 0
 dead_animation_start_time =0
 DEAD_ANIMATION_DURATION = 1.0
+game_over_display_start_time=0
+GAME_OVER_DISPLAY_DURATION=1.0
 
 
 def get_boy_bb(cx, cy):
@@ -127,7 +131,7 @@ def get_boy_pos():
 
 def handle_events():
     global running, dir, dir_y, face_dir, attack_state, key_attack_state, attack_frame, key_attack_frame
-    if is_dead:
+    if player_state != "RUNNING":
         return
 
     events = get_events()
@@ -360,7 +364,7 @@ dir_y = 0
 while running:
     handle_events()
     current_time = get_time()
-    if not is_dead and not attack_state and not key_attack_state:
+    if player_state == "RUNNING" and not attack_state and not key_attack_state:
         x += dir * 5
         y += dir_y * 5
         x = max(0, min(x, 800))
@@ -405,10 +409,9 @@ while running:
                     player_hp -= 1
                     m.collision_start_time = None
                     if player_hp <= 0:
-                        if not is_dead:
-                            is_dead = True
+                        if player_state == "RUNNING":
+                            player_state="DEAD"
                             dead_animation_start_time = current_time
-                            dead_frame=0
                             dir=0
                             dir_y=0
                             attack_state=False
@@ -420,12 +423,17 @@ while running:
 
     monsters = [m for m in monsters if m not in monsters_to_remove]
     keys = [k for k in keys if k not in keys_to_remove]
-    if is_dead:
+    if player_state == "DEAD":
         time_elapsed = current_time - dead_animation_start_time
         frame_duration = DEAD_ANIMATION_DURATION /5
         dead_frame = min(4,int(time_elapsed / frame_duration))
         if time_elapsed >=DEAD_ANIMATION_DURATION:
-            running=False
+            player_state="GAME_OVER_DISPLAY"
+            game_over_display_start_time=current_time
+    elif player_state == "GAME_OVER_DISPLAY":
+        time_elapsed = current_time - game_over_display_start_time
+        if time_elapsed >= GAME_OVER_DISPLAY_DURATION:
+            running = False
 
     if not monsters and not keys:
         if current_stage == 1:
@@ -452,8 +460,10 @@ while running:
         key.draw()
     draw_hearts()
 
-    if is_dead:
+    if player_state == "DEAD":
         dead_character.clip_draw(dead_frame *40,0,88,90,x,y)
+    elif player_state == "GAME_OVER_DISPLAY":
+        game_over_image.draw(400,300,600,300)
 
     elif attack_state:
         if face_dir == 1:
